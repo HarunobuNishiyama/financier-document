@@ -1,0 +1,124 @@
+# ドメインモデルとDB
+
+## ドメインモデル
+
+このアプリケーションの主機能は、  
+- 家計の一部を同じくする者が支出を記録する
+- 出費を均等にするための計算を行う
+
+ことである。  
+また、ポートフォリオとして使う際、個人情報である支出情報を公開しないために、ゲストユーザーのアカウントを
+設ける。
+
+**帳簿**  
+
+「支出を記録する/個人的な支出情報を公開しない」ために、「帳簿」という概念を用いる。  
+支出の記録は帳簿ごとに行い、その帳簿に紐づくユーザーしか、情報の閲覧や操作ができない。
+
+
+![帳簿システム](./book_system.png)
+
+**支出情報**  
+支出情報は厳格な定義は定めずにユーザーの運用に一部委ねることにするが、ここでは分かりやすくするため
+- 「レシート一枚当たり」 = 「一件の支出情報」
+
+とする。  
+一件の支出情報は、次の要素で構成される。
+- 日付: 支出の日付で、年/月/日の単位で記録される
+- 支出項目: 何の支出かを示す(電気代、食費など)
+- 金額: 支出の金額
+- 立替: 立替支出か通常の支出かを示す
+- 支払い者: 支払ったユーザーを示す
+
+**支出項目**  
+
+支出情報を構成する要素の一つである支出項目の役割は先述の通り。  
+ユーザー操作において、支出項目は予め登録された一覧から、適するものを選択する形で入力される。
+
+支出項目は、以下の要素で構成される。
+- 項目名: 何の支出であるかをわかりやすく示す項目名
+- 説明: 項目名を詳細に説明する文章
+
+支出項目を登録管理する画面では項目名と説明文を表示し、支出情報を入力する画面では項目名だけを
+選択肢として表示する。
+
+![支出と支出項目](./expence_category.png)
+
+**個人情報の保護**  
+上述の通り、「帳簿」を分けることで個人情報を保護する。  
+従って、DB上で管理される「支出情報」と「支出項目」には、どの帳簿に紐づくデータなのかが必ず明記される。
+
+## DB
+
+テーブル定義を上記のドメインモデルに沿って説明する。  
+(※DBの詳細資料は、SchemaSpyで出力したものをプロジェクトのtoolsディレクトリに配置している。)
+
+**関係図**
+
+![DB関係図](./db_relation.PNG)
+
+***
+
+**account**  
+主キーでユーザーを一意に管理する。名前とパスワードでユーザーの認証を行う。
+
+| Field      | Type         | Null | Key | Default | description    |
+|:--         |:--           |:--   |:--  |:--      |:--             |
+| account_id | int(11)      | NO   | PRI | NULL    | 主キー         |
+| name       | varchar(10)  | NO   |     | NULL    | ユーザー名     |
+| password   | varchar(200) | NO   |     | NULL    | パスワード     |
+
+***
+
+**book**  
+主キーで帳簿を一意に管理する。画面表示向けに、帳簿は固有の名前を持つ。
+
+| Field     | Type        | Null | Key | Default | description    |
+|:--        |:--          |:--   |:--  |:--      |:--             |
+| book_id   | int(11)     | NO   | PRI | NULL    | 主キー         |
+| book_name | varchar(50) | NO   |     | NULL    | 帳簿名         |
+
+***
+
+**book_member**  
+ユーザーがどの帳簿に所属するかを管理する。  
+1レコードあたりに、帳簿と所属するユーザーのアカウントの組み合わせが格納される。
+
+| Field          | Type         | Null | Key | Default | description                   | FK                 |
+|:--             |:--           |:--   |:--  |:--      |:--                            |:--                 |
+| book_member_id | int(11)      | NO   | PRI | NULL    | 主キー                        |                    |
+| account_id     | int(11)      | NO   | MUL | NULL    | 所属するアカウント            | account.account_id |
+| book_id        | int(11)      | NO   | MUL | NULL    | アカウントが所属する帳簿      | book.book_id       |
+
+***
+
+**category**  
+ユーザーの登録した支出項目を管理する。  
+個人情報保護のために、`book_id`でどの帳簿の情報なのか区別する。
+
+| Field         | Type        | Null | Key | Default | description            | FK                 |
+|:--            |:--          |:--   |:--  |:--      |:--                     |:--                 |
+| category_id   | int(11)     | NO   | PRI | NULL    | 主キー                 |                    |
+| category_name | varchar(20) | NO   |     | NULL    |項目名                  |                    |
+| description   | varchar(20) | NO   |     | NULL    |項目名の説明            |                    |
+| book_id       | int(11)     | NO   | MUL | NULL    |どの帳簿のデータか示す  | book.book_id       |
+| available     | tinyint(1)  | NO   |     | 1       |使用可能か              |                    |
+
+***
+
+**expence**  
+ユーザーの登録した支出情報を管理する。  
+個人情報保護のために、`book_id`でどの帳簿の情報なのか区別する。
+
+| Field         | Type       | Null | Key | Default | description                     | FK                   |
+|:--            |:--         |:--   |:--  |:--      |:--                              |:--                   |
+| expence_id    | int(11)    | NO   | PRI | NULL    | 主キー                          |                      |
+| category_id   | int(11)    | NO   | MUL | NULL    | 外部キー                        | category.category_id |
+| price         | int(11)    | NO   |     | NULL    | 金額                            |                      |
+| purchace_date | datetime   | NO   |     | NULL    | 購入日                          | book.book_id         |
+| book_id       | int(11)    | NO   | MUL | NULL    | どの帳簿のデータか示す          | book.book_id         |
+| account_id    | int(11)    | NO   | MUL | NULL    | 支払者であるユーザー            | account.account_id   |
+| reimbursement | tinyint(1) | NO   |     | 0       | trueであれば立替支出である      |                      |
+
+***
+

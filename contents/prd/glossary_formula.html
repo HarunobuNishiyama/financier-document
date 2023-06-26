@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+
+<html lang="jp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>用語集・計算式 &#8212; financier_document  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="リリース" href="release.html" />
+    <link rel="prev" title="要件" href="requirement.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="release.html" title="リリース"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="requirement.html" title="要件"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">PRD</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">用語集・計算式</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1>用語集・計算式<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
+<section id="id2">
+<h2>用語集<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<p><strong>立替</strong><br />
+一人の個人的な出費を、もう一人が一時的に代わって支払ったことを指します。立て替えた人は、その全額を返還されなければなりません。</p>
+<hr class="docutils" />
+<p><strong>清算額</strong><br />
+月ごとに算出される額です。その月の支出額をもとに、どちらのユーザーがもう一方にいくら払えば支出が均等になるかを示します。</p>
+</section>
+<hr class="docutils" />
+<section id="id3">
+<h2>計算式<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h2>
+<p>用語集の「精算額」を算出するための計算式は以下の通りです。清算は月ごとに行う前提とします。</p>
+<p>まずは、ユーザー一人当たりのの支出合計を計算します。</p>
+<p><code class="docutils literal notranslate"><span class="pre">(一人当たりの合計支出)</span> <span class="pre">=</span> <span class="pre">SUM(一件ごとの支出額)</span> <span class="pre">+</span> <span class="pre">(立替での支出額)</span> <span class="pre">*</span> <span class="pre">2</span></code></p>
+<p>立替での支出額は2で掛けているため、ここで算出されたユーザー当たりの支出合計は、単体で見ると意味を成しません。理由は後述します。</p>
+<p>算出したユーザー当たりの合計支出を比較し、多いほうから低いほうを減算し、合計支出の差額を求めます。<br />
+差額が0だった場合は、ここで計算終了とします。</p>
+<p><code class="docutils literal notranslate"><span class="pre">(差額)</span> <span class="pre">=</span> <span class="pre">(比較して多かったほうのユーザー当たりの合計支出額)</span> <span class="pre">-</span> <span class="pre">(比較して低かったほうのユーザー当たりの合計支出額)</span></code></p>
+<p>ここで算出された差額から、どちらのユーザーがもう一方にいくら支払えば当月の支出が均等になるか求めます。</p>
+<p><code class="docutils literal notranslate"><span class="pre">(清算額)</span> <span class="pre">=</span> <span class="pre">(差額)</span> <span class="pre">/</span> <span class="pre">2</span></code></p>
+<p>これで計算は終了です。算出された精算額を、合計支出が低かったユーザーが、合計支出の多かったユーザーへ支払います。立替額を2で掛けたのは、最後に2で割るためです。通常の支出は折版なので2で割って問題ありませんが、立替は全額返還する必要があるため、あらかじめ倍の額で計上します。</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">用語集・計算式</a><ul>
+<li><a class="reference internal" href="#id2">用語集</a></li>
+<li><a class="reference internal" href="#id3">計算式</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="requirement.html"
+                          title="previous chapter">要件</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="release.html"
+                          title="next chapter">リリース</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/contents/prd/glossary_formula.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="release.html" title="リリース"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="requirement.html" title="要件"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >PRD</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">用語集・計算式</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, H.Nishiyama.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,459 @@
+
+<!DOCTYPE html>
+
+<html lang="jp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>支出情報操作画面 &#8212; financier_document  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="項目設定画面" href="category_setting.html" />
+    <link rel="prev" title="ログイン画面" href="login.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="category_setting.html" title="項目設定画面"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="login.html" title="ログイン画面"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >開発ドキュメント</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">画面デザイン・操作・CGI設計</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">支出情報操作画面</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1>支出情報操作画面<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
+<h1 style="font-size: 50px; background-color:lightgray;">画面機能要件</h1>
+<p>支出情報操作画面の要件について記す。</p>
+<section id="id2">
+<h2>機能と配置<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<p>支出情報を年月単位で登録管理し、精算額を算出して表示する。</p>
+<ul class="simple">
+<li><p>表示する情報の年を選択するプルダウンメニュー「年選択ドロップダウン」を上部左側に配置する。</p></li>
+<li><p>「年選択ドロップダウン」の右側に1～12月の表示を切り替える「月選択ボタン」を配置する。</p></li>
+<li><p>「月選択ボタン」の下部に「支出情報テーブル」を配置する。</p></li>
+<li><p>「支出情報テーブル」のヘッダー(日付/項目/金額/立替/支払い)は登録情報0件の場合でも表示する。</p></li>
+<li><p>「支出情報テーブル」のヘッダーの「項目」の横に歯車アイコンの「支出項目設定ボタン」を配置する。</p></li>
+<li><p>「支出情報テーブル」のヘッダーの下部に登録された情報を表示する。(登録情報0件の場合は表示なし)</p></li>
+<li><p>登録された情報の右側にゴミ箱アイコンの「支出情報削除ボタン」を配置する。</p></li>
+<li><p>「支出情報テーブル」の下部に登録情報(日付/項目/金額/立替/支払い)を入力するための「支出情報登録フォーム」を配置する。</p></li>
+<li><p>「支出情報登録フォーム」の右側にプラス(＋)アイコンの「支出情報登録ボタン」を配置する。</p></li>
+<li><p>「支出情報登録フォーム」の下部にユーザーごとの支出合計と立替合計、精算額を表示した「清算額表示」を配置する。</p></li>
+</ul>
+</section>
+<section id="api">
+<h2>使用するAPI<a class="headerlink" href="#api" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>expence [GET] [POST] [DELETE]</p></li>
+<li><p>category [GET]</p></li>
+<li><p>bookmember [GET]</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>デザイン<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h2>
+<p><img alt="支出操作画面" src="../../../_images/expence_operation.png" /></p>
+</section>
+<section id="id4">
+<h2>パーツごとの詳細仕様<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h2>
+<p><strong>年選択ドロップダウン</strong></p>
+<p>Figma英名...year_select<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;select&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>閲覧中の情報の年を表示し、ほかの年を選択すると選択された年の情報に切り替わる。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>画面遷移時は現在年を表示する。</p></li>
+<li><p>選択可能な範囲はリリース予定の2023年から2100年まで。</p></li>
+</ul>
+<p>アクション</p>
+<ul class="simple">
+<li><p>ドロップダウンメニュー選択時、選択された年の1月の情報を取得し、「支出情報テーブル」を更新する。</p></li>
+<li><p>使用するAPI: expence<code class="docutils literal notranslate"><span class="pre">[GET]</span></code></p></li>
+</ul>
+<hr class="docutils" />
+<p><strong>月選択ボタン</strong></p>
+<p>Figma英名...month_select_button<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;button&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>閲覧中の情報の月を示し、ほかの月のボタンを押下すると表示情報が切り替わる。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>1～12月のボタンを、その月の支出データの有無にかかわらず常に表示する。</p></li>
+<li><p>選択中の月ボタンは、他の月ボタンと色を変えて区別する。</p></li>
+<li><p>画面遷移時は現在の日付の月が選択される。</p></li>
+<li><p>任意の月のボタン押下で、その月の表示に切り替える。</p></li>
+<li><p>「年選択ドロップダウン」により表示年が変わった場合は、1月が自動的に選択される。</p></li>
+</ul>
+<p>アクション</p>
+<ul class="simple">
+<li><p>ボタン押下時、選択された月の情報を取得し、「支出情報テーブル」を更新する。</p></li>
+<li><p>使用するAPI: expence<code class="docutils literal notranslate"><span class="pre">[GET]</span></code></p></li>
+</ul>
+<hr class="docutils" />
+<p><strong>支出情報テーブル</strong></p>
+<p>Figma英名...expence_table<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;table&gt;</span></code>他<br />
+データ取得...expence [GET]</p>
+<p>役割</p>
+<ul class="simple">
+<li><p>登録された支出情報を月単位で表示する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>画面遷移時は、現在年・現在月の支出情報を表示する。<br />
+(「年選択ドロップダウン」、「月選択ボタン」と表示を合わせること)</p></li>
+<li><p>「年選択ドロップダウン」により新たに表示年が選択された場合は、選択年1月のデータを表示する。<br />
+(「年選択ドロップダウン」、「月選択ボタン」と表示を合わせること)</p></li>
+<li><p>表示項目は</p>
+<ul>
+<li><p>[日/項目/金額/立替/購入者/1レコードを削除する支出情報削除ボタン]</p></li>
+</ul>
+</li>
+<li><p>ヘッダーの「項目」の右にある「支出項目設定ボタン」押下で、支出項目設定画面へ遷移する。</p></li>
+</ul>
+<p><strong>支出情報削除ボタン</strong></p>
+<p>Figma英名...delete_expence_button<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;button&gt;</span></code><br />
+データ削除...expence [DELETE]</p>
+<p>役割</p>
+<ul class="simple">
+<li><p>「支出情報テーブル」の1レコードのデータを削除する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>「支出情報テーブル」の一行に対応する削除ボタンを、それぞれの行の右横に設ける。</p></li>
+</ul>
+<p>アクション</p>
+<ul class="simple">
+<li><p>押下後、該当行の削除を行い、当月のデータを再度取得し、「支出情報テーブル」の表示を更新する。</p></li>
+</ul>
+<hr class="docutils" />
+<p><strong>支出情報登録フォーム</strong></p>
+<p>Figma英名...expence_form<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;form&gt;</span></code></p>
+<p>役割</p>
+<ul>
+<li><p>「支出情報テーブル」に表示される1レコードのデータを登録するためのフォーム。<br />
+以下のパーツで構成される</p>
+<p><strong>日づけ選択ドロップダウン</strong><br />
+Figma英名...date_select<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;select&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>「年選択ドロップダウン」、「月選択ボタン」で選択中の年月から入力可能な日数を判定し、入力値を制限する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>選択必須</p></li>
+</ul>
+<p><strong>支出項目選択ドロップダウン</strong><br />
+Figma英名...category_select<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;select&gt;</span></code><br />
+データ取得...category [GET]</p>
+<p>役割</p>
+<ul class="simple">
+<li><p>登録された支出項目を選択肢として表示する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>選択必須</p></li>
+</ul>
+<p><strong>金額入力ボックス</strong><br />
+Figma英名...price_input<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;input</span> <span class="pre">type=&quot;text&quot;&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>支出額を入力する</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>入力必須</p></li>
+<li><p>半角数値のみ受け付ける。</p></li>
+</ul>
+<p><strong>立替チェックボックス</strong><br />
+Figma英名...reimbursement_check<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;input</span> <span class="pre">type=&quot;checkbox&quot;&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>チェックされた状態で、立替支出であることを示す。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>入力は任意。</p></li>
+</ul>
+<p><strong>支払者選択ドロップダウン</strong><br />
+Figma英名...payer_select<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;select&gt;</span></code><br />
+データ取得...bookmember [GET]</p>
+<p>役割</p>
+<ul class="simple">
+<li><p>取得した帳簿メンバーをもとに、選択肢を表示する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>選択必須。</p></li>
+</ul>
+<p><strong>支出情報登録ボタン</strong></p>
+<p>Figma英名...expence_form_submit_button<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;button&gt;</span></code><br />
+データ登録...expence[POST]</p>
+<p>役割</p>
+<ul class="simple">
+<li><p>「支出情報登録フォーム」に入力した内容を支出情報として登録する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>フォームの入力に誤りがない場合に押下可能となる。</p></li>
+</ul>
+<p>アクション</p>
+<ul class="simple">
+<li><p>押下後、入力内容をAPIの仕様に従って調整し、登録を行う。</p></li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+<p><strong>清算額表示</strong></p>
+<p>Figma英名...payment_display_card<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;table&gt;</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;p&gt;</span></code>他</p>
+<p>役割</p>
+<ul class="simple">
+<li><p>精算情報を表示する<br />
+清算額の計算式は<a class="reference internal" href="../../prd/glossary_formula.html"><span class="doc std std-doc">「PRD &gt; 用語集・計算式」</span></a>を参照。</p></li>
+</ul>
+<p>下記の形式で表示する</p>
+<ul class="simple">
+<li><p>ユーザーごとの支出合計と立替合計</p></li>
+<li><p>次のようなフォーマットの支払い情報<br />
+「user1」が「user2」に「￥**,***」支払う</p></li>
+</ul>
+</section>
+<section id="cgi">
+<h2>操作・CGI<a class="headerlink" href="#cgi" title="Permalink to this heading">¶</a></h2>
+<p><strong>ページ遷移</strong></p>
+<ol class="arabic simple">
+<li><p>ユーザーがログイン後この「支出操作画面」へ遷移</p></li>
+<li><p>サーバーに対し、以下のAPIでリクエストを行う</p>
+<ul class="simple">
+<li><p>expence [GET]<br />
+API仕様に従い、現在年・現在月をクエリパラメータに指定する</p></li>
+<li><p>category [GET]</p></li>
+<li><p>bookmember [GET]</p></li>
+</ul>
+</li>
+<li><p>正常応答時、2に対するレスポンスが返される</p></li>
+<li><p>レスポンスデータをもとに次のパーツを描画</p>
+<ul class="simple">
+<li><p>expence [GET]: <code class="docutils literal notranslate"><span class="pre">expence_table</span></code></p></li>
+<li><p>category [GET]: <code class="docutils literal notranslate"><span class="pre">expence_form</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">category_select</span></code></p></li>
+<li><p>bookmember [GET]: <code class="docutils literal notranslate"><span class="pre">expence_form</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">payer_select</span></code></p></li>
+</ul>
+</li>
+</ol>
+<div class="mermaid">
+            	sequenceDiagram
+	    autonumber
+	    actor 画面
+	    participant browser as ブラウザ
+	    participant server as サーバー
+	    画面-&gt;&gt;browser : 画面遷移
+	    browser-&gt;&gt;server : expence[GET]&lt;br/&gt;category[GET]&lt;br/&gt;bookmember[GET]
+	    server-&gt;&gt;browser : 正常応答
+	    browser-&gt;&gt;画面 : 取得したデータから画面を描画
+        </div><hr class="docutils" />
+<p><strong>支出情報登録フォーム送信</strong></p>
+<ol class="arabic simple">
+<li><p>「支出情報登録ボタン」の押下</p></li>
+<li><p>入力された支出情報をもとにexpence [POST]を使用し支出情報を登録する</p></li>
+<li><p>正常終了時、後続の処理へ進む</p></li>
+<li><p>expence [GET]を使用し、操作中の月の支出情報を取得</p></li>
+<li><p>正常終了時、該当月の支出情報がレスポンスされる</p></li>
+<li><p>取得情報をもとに「支出情報テーブル」を更新</p></li>
+</ol>
+<div class="mermaid">
+            	sequenceDiagram
+	    autonumber
+	    actor 画面
+	    participant browser as ブラウザ
+	    participant server as サーバー
+	    画面-&gt;&gt;browser : 送信ボタン押下
+	    Note left of browser : 支出情報登録フォーム
+	    browser-&gt;&gt;server : expence[POST]
+	    Note left of server : API仕様に沿ったDTO
+	    server-&gt;&gt;browser : 正常終了応答
+	    Note left of server : 201
+	    browser-&gt;&gt;server : expence[GET]
+	    server-&gt;&gt;browser : 正常終了応答
+	    Note left of server : 支出情報
+	    browser-&gt;&gt;画面 : 支出情報テーブル更新
+        </div><hr class="docutils" />
+<p><strong>支出情報削除</strong></p>
+<ol class="arabic simple">
+<li><p>「支出情報テーブル」&gt;「支出情報削除ボタン」の押下</p></li>
+<li><p>該当データのリソースIDをもと、expence [DELETE]を使用し削除リクエストを行う</p></li>
+<li><p>正常終了時、後続の処理へ進む</p></li>
+<li><p>expence [GET]を使用し、操作中の月の支出情報を取得</p></li>
+<li><p>正常終了時、該当月の支出情報がレスポンスされる</p></li>
+<li><p>取得情報をもとに「支出情報テーブル」を更新</p></li>
+</ol>
+<div class="mermaid">
+            	sequenceDiagram
+	    autonumber
+	    actor 画面
+	    participant browser as ブラウザ
+	    participant server as サーバー
+	    画面-&gt;&gt;browser : 削除ボタン押下
+	    browser-&gt;&gt;server : expence[DELETE]/{id}
+	    server-&gt;&gt;browser : 正常終了
+	    Note left of server : 204
+	    browser-&gt;&gt;server : expence[GET]
+	    server-&gt;&gt;browser : 正常終了
+	    Note left of server : 支出情報
+	    browser-&gt;&gt;画面 : 支出情報テーブル更新
+        </div><hr class="docutils" />
+<p><strong>表示月移動</strong></p>
+<ol class="arabic simple">
+<li><p>表示を移動したい月の「月選択ボタン」を押下</p></li>
+<li><p>expence [GET]を使用し、選択された月の支出情報を取得</p></li>
+<li><p>正常終了時、該当月の支出情報がレスポンスされる</p></li>
+<li><p>取得情報をもとに「支出情報テーブル」を更新</p></li>
+</ol>
+<div class="mermaid">
+            	sequenceDiagram
+	    autonumber
+	    actor 画面
+	    participant browser as ブラウザ
+	    participant server as サーバー
+	    画面-&gt;&gt;browser : 「月選択ボタン」押下
+	    browser-&gt;&gt;server : expence[GET]
+	    server-&gt;&gt;browser : 正常終了
+	    Note left of server : 支出情報
+	    browser-&gt;&gt;画面 : 支出情報テーブル更新
+
+        </div><hr class="docutils" />
+<p><strong>表示年移動</strong></p>
+<ol class="arabic simple">
+<li><p>表示を移動したい年の「年選択ドロップダウン」を押下</p></li>
+<li><p>expence [GET]を使用し、選択された年の1月の支出情報を取得</p></li>
+<li><p>正常終了時、該当年1月の支出情報がレスポンスされる</p></li>
+<li><p>取得情報をもとに「支出情報テーブル」を更新</p></li>
+</ol>
+<div class="mermaid">
+            	sequenceDiagram
+	    autonumber
+	    actor 画面
+	    participant browser as ブラウザ
+	    participant server as サーバー
+	    画面-&gt;&gt;browser : 「月選択ボタン」押下
+	    browser-&gt;&gt;server : expence[GET]
+	    server-&gt;&gt;browser : 正常終了
+	    Note left of server : 支出情報
+	    browser-&gt;&gt;画面 : 支出情報テーブル更新
+        </div></section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">支出情報操作画面</a><ul>
+<li><a class="reference internal" href="#id2">機能と配置</a></li>
+<li><a class="reference internal" href="#api">使用するAPI</a></li>
+<li><a class="reference internal" href="#id3">デザイン</a></li>
+<li><a class="reference internal" href="#id4">パーツごとの詳細仕様</a></li>
+<li><a class="reference internal" href="#cgi">操作・CGI</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="login.html"
+                          title="previous chapter">ログイン画面</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="category_setting.html"
+                          title="next chapter">項目設定画面</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/contents/dev_document/design_operation_cgi/expence_operation.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="category_setting.html" title="項目設定画面"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="login.html" title="ログイン画面"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >開発ドキュメント</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >画面デザイン・操作・CGI設計</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">支出情報操作画面</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, H.Nishiyama.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    </div>
+  </body>
+</html>

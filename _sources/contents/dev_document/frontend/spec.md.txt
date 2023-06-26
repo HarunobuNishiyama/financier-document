@@ -1,0 +1,9 @@
+# 技術仕様
+
+言語: TypeScript
+
+ライブラリ: React
+
+リンター: ESLint, Prittier
+
+バンドラー: Webpack

@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+
+<html lang="jp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>要件 &#8212; financier_document  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="用語集・計算式" href="glossary_formula.html" />
+    <link rel="prev" title="プロジェクト概要" href="project_overview.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="glossary_formula.html" title="用語集・計算式"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="project_overview.html" title="プロジェクト概要"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">PRD</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">要件</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1>要件<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
+<section id="id2">
+<h2>ユースケースと主機能<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<p><strong>ユースケース</strong><br />
+ユーザーは、二人暮らしで家計を一部共有している自分たちです。毎月それぞれの出費を集計し、集計をもとに支出額が均等になるように調整しています。その作業における、支出の記録と差額の算出をこのアプリが担います。</p>
+<hr class="docutils" />
+<p><strong>支出記録の機能</strong><br />
+レシート単位でユーザーが支出データを入力し、DBへ記録します。記録された情報の表示は月別で表示されます。入力項目は以下の通りです。</p>
+<ul class="simple">
+<li><p>日づけ/支出項目/金額/立替か否か/支払い者</p></li>
+</ul>
+<hr class="docutils" />
+<p><strong>支出清算の機能</strong><br />
+記録したそれぞれのユーザーの支出額を集計し差額を算出します。差額が0以外の場合は、その算出額から、どちらがいくら支払えばいいかを表示します。</p>
+</section>
+<section id="id3">
+<h2>画面と機能<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h2>
+<p><strong>ログイン画面</strong><br />
+名前とパスワードでユーザーを認証し、ログイン後は所属する帳簿の閲覧・操作を可能にします。<br />
+就職活動の際にポートフォリオとしても使うことを想定し、ログイン機能により情報の閲覧・操作を保護します。プライベートのアカウントとゲストアカウントを用意します。</p>
+<hr class="docutils" />
+<p><strong>支出情報操作画面</strong></p>
+<ul class="simple">
+<li><p>支出データの登録<br />
+レシート単位でユーザーが支出データを入力し、DBへ記録します。</p></li>
+<li><p>支出情報の閲覧<br />
+記録された情報を月別で表示します。年/月を選択することで表示を切り替えます。</p></li>
+<li><p>データの削除<br />
+記録された情報を一件ごとに削除できます。</p></li>
+</ul>
+<hr class="docutils" />
+<p><strong>支出項目設定画面</strong><br />
+支出情報を構成するひとつである支出項目の設定を行います。<br />
+設定項目は以下の通りです。</p>
+<ul class="simple">
+<li><p>支出項目名/説明<br />
+例) 食費/外食費含む</p></li>
+</ul>
+<p>登録された項目名は、支出情報登録の際に、選択肢として表示されます。<br />
+登録と変更が可能です。削除は、すでに登録された支出情報に不整合が出るので不可とします。</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">要件</a><ul>
+<li><a class="reference internal" href="#id2">ユースケースと主機能</a></li>
+<li><a class="reference internal" href="#id3">画面と機能</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="project_overview.html"
+                          title="previous chapter">プロジェクト概要</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="glossary_formula.html"
+                          title="next chapter">用語集・計算式</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/contents/prd/requirement.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="glossary_formula.html" title="用語集・計算式"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="project_overview.html" title="プロジェクト概要"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >PRD</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">要件</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, H.Nishiyama.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    </div>
+  </body>
+</html>

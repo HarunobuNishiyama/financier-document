@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+
+<html lang="jp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ログイン画面 &#8212; financier_document  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="支出情報操作画面" href="expence_operation.html" />
+    <link rel="prev" title="ヘッダー" href="header.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="expence_operation.html" title="支出情報操作画面"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="header.html" title="ヘッダー"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >開発ドキュメント</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">画面デザイン・操作・CGI設計</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ログイン画面</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1>ログイン画面<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
+<p>ログイン画面の要件について記す。</p>
+<section id="id2">
+<h2>機能と配置<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<p>ユーザー名とパスワードで認証を行う。</p>
+<ul class="simple">
+<li><p>画面中央に「名前入力ボックス」を配置する。</p></li>
+<li><p>「名前入力ボックス」の下部に「パスワード入力ボックス」を配置する。</p></li>
+<li><p>「パスワード入力ボックス」の下部に「ログイン」ボタンを配置する。</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>デザイン<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h2>
+<p><img alt="画面デザイン" src="../../../_images/login.png" /></p>
+</section>
+<section id="id4">
+<h2>パーツごとの詳細仕様<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h2>
+<p><strong>名前入力ボックス</strong></p>
+<p>Figma英名...name_input<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;input</span> <span class="pre">type=&quot;text&quot;&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>ログインするユーザーの名前を入力する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>入力必須。</p></li>
+</ul>
+<p><strong>パスワード入力ボックス</strong></p>
+<p>Figma英名...password_input<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;input</span> <span class="pre">type=&quot;text&quot;&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>ログインするユーザーのパスワードを入力する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>入力必須。</p></li>
+</ul>
+<p><strong>ログインボタン</strong></p>
+<p>Figma英名...login_button<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;button&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>入力された内容で、ログイン認証をサーバーにリクエストする。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>名前とパスワードが入力されたときに押下可能となる。</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ログイン画面</a><ul>
+<li><a class="reference internal" href="#id2">機能と配置</a></li>
+<li><a class="reference internal" href="#id3">デザイン</a></li>
+<li><a class="reference internal" href="#id4">パーツごとの詳細仕様</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="header.html"
+                          title="previous chapter">ヘッダー</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="expence_operation.html"
+                          title="next chapter">支出情報操作画面</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/contents/dev_document/design_operation_cgi/login.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="expence_operation.html" title="支出情報操作画面"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="header.html" title="ヘッダー"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >開発ドキュメント</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >画面デザイン・操作・CGI設計</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ログイン画面</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, H.Nishiyama.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    </div>
+  </body>
+</html>

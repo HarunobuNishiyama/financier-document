@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+
+<html lang="jp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>項目設定画面 &#8212; financier_document  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="フロントエンド" href="../frontend/index.html" />
+    <link rel="prev" title="支出情報操作画面" href="expence_operation.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../frontend/index.html" title="フロントエンド"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="expence_operation.html" title="支出情報操作画面"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >開発ドキュメント</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">画面デザイン・操作・CGI設計</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">項目設定画面</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1>項目設定画面<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
+<p>項目設定画面の要件について記す。</p>
+<section id="id2">
+<h2>機能と配置<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<p>支出項目を登録管理する。</p>
+<ul class="simple">
+<li><p>「支出項目一覧」という見出しと、「支出情報操作画面へ戻るボタン」を左右に配置する</p></li>
+<li><p>「支出項目テーブル」を中央に配置する。</p></li>
+<li><p>「支出項目テーブル」のヘッダー(項目名/説明)は登録情報0件の場合でも表示する。</p></li>
+<li><p>「支出項目テーブル」のヘッダーの下部に登録された情報を表示する。(登録情報0件の場合は表示なし)</p></li>
+<li><p>登録された情報の右側にペンアイコンの「支出項目編集ボタン」を配置する。</p></li>
+<li><p>「支出項目テーブル」の下部に登録情報(項目名/説明)を入力するための「支出項目登録フォーム」を配置する。</p></li>
+<li><p>「支出項目登録フォーム」の右側にプラス(＋)アイコンの「支出項目登録ボタン」を配置する。</p></li>
+</ul>
+</section>
+<section id="api">
+<h2>使用するAPI<a class="headerlink" href="#api" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>categoty [GET] [POST] [PUT]</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>デザイン<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h2>
+<p><img alt="支出項目設定画面" src="../../../_images/category_setting.png" /></p>
+</section>
+<section id="id4">
+<h2>パーツごとの詳細仕様<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h2>
+<p><strong>支出項目テーブル</strong></p>
+<p>Figma英名...category_table<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;table&gt;</span></code>他<br />
+データ取得...category [GET]</p>
+<p>役割</p>
+<ul class="simple">
+<li><p>登録された支出項目を表示する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>支出項目を表形式で表示する。</p></li>
+<li><p>表示項目は</p>
+<ul>
+<li><p>項目名</p></li>
+<li><p>説明</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>支出項目編集ボタン</strong></p>
+<p>Figma英名...edit_category_button<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;button&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>支出項目を編集するモーダルウィンドウを開く。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>「支出項目テーブル」の各行に設けられる。</p></li>
+</ul>
+<p>アクション</p>
+<ul class="simple">
+<li><p>押下時、該当行のデータを編集するモーダルウィンドウを開く。</p></li>
+</ul>
+<hr class="docutils" />
+<p><strong>支出項目登録フォーム</strong></p>
+<p>Figma英名...post_category_form<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;form&gt;</span></code><br />
+データ登録...category [POST]</p>
+<p>役割</p>
+<ul>
+<li><p>「支出項目表」に表示される1行あたりのデータを登録するためのフォーム。<br />
+以下のパーツで構成される。</p>
+<p><strong>支出項目名入力ボックス</strong></p>
+<p>Figma英名...category_name_input<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;input</span> <span class="pre">type=&quot;text&quot;&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>支出項目名を入力する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>入力必須。</p></li>
+</ul>
+<p><strong>支出項目説明入力ボックス</strong></p>
+<p>Figma英名...category_description_input<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;input</span> <span class="pre">type=&quot;text&quot;&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>支出項目の説明を入力する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>入力は任意。</p></li>
+</ul>
+<p><strong>支出項目登録ボタン</strong></p>
+<p>Figma英名...category_submit_button<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;button&gt;</span></code></p>
+<p>役割</p>
+<ul class="simple">
+<li><p>「支出項目登録フォーム」に入力した内容を支出情報として登録する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>フォームの入力に誤りがない場合に使用可能となる。</p></li>
+</ul>
+<p>アクション</p>
+<ul class="simple">
+<li><p>押下後、入力内容をAPIの仕様に従って調整し、登録を行う。</p></li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+<p><strong>支出項目編集フォーム</strong></p>
+<p>Figma英名...edit_category_form<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;form&gt;</span></code><br />
+データ登録...category [PUT]</p>
+<p>役割</p>
+<ul class="simple">
+<li><p>登録済みの支出項目の編集を行う。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>「支出項目編集ボタン」押下時に、モーダルウィンドウで表示する。</p></li>
+<li><p>「支出項目名入力ボックス」と「支出項目説明入力ボックス」と同じ入力パーツを持つ。</p></li>
+<li><p>登録済みの内容を入力パーツの初期値として引き継ぎ表示する。</p></li>
+</ul>
+<p><strong>支出項目変更ボタン</strong></p>
+<p>Figma英名...update_category_button<br />
+HTMLタグ...<code class="docutils literal notranslate"><span class="pre">&lt;button&gt;</span></code></p>
+<p>主な役割</p>
+<ul class="simple">
+<li><p>「支出項目編集フォーム」に入力した内容に変更して登録する。</p></li>
+</ul>
+<p>仕様</p>
+<ul class="simple">
+<li><p>フォームの入力に誤りがない場合に使用可能となる。</p></li>
+</ul>
+<p>アクション</p>
+<ul class="simple">
+<li><p>押下後、入力内容をAPIの仕様に従って調整し、登録を行う。</p></li>
+</ul>
+</section>
+<section id="cgi">
+<h2>操作・CGI<a class="headerlink" href="#cgi" title="Permalink to this heading">¶</a></h2>
+<p><strong>ページ遷移</strong></p>
+<ol class="arabic simple">
+<li><p>ユーザーの操作でこの「項目設定画面」へ遷移</p></li>
+<li><p>サーバーに対し、以下のAPIでリクエストを行う</p>
+<ul class="simple">
+<li><p>category [GET]</p></li>
+</ul>
+</li>
+<li><p>正常終了時、2に対するレスポンスが返される</p></li>
+<li><p>レスポンスデータをもとに<code class="docutils literal notranslate"><span class="pre">category_table</span></code>を描画</p></li>
+</ol>
+<div class="mermaid">
+            	sequenceDiagram
+	    autonumber
+	    actor 画面
+	    participant browser as ブラウザ
+	    participant server as サーバー
+	    画面-&gt;&gt;browser : 画面遷移
+	    browser-&gt;&gt;server : category[GET]
+	    server-&gt;&gt;browser : 正常応答
+	    browser-&gt;&gt;画面 : 取得したデータから画面を描画
+        </div><hr class="docutils" />
+<p><strong>支出項目登録</strong></p>
+<ol class="arabic simple">
+<li><p>「支出項目登録ボタン」の押下</p></li>
+<li><p>入力された支出項目情報をもとにcategory [POST]を使用し支出情報を登録する</p></li>
+<li><p>正常終了時、後続の処理へ進む</p></li>
+<li><p>category [GET]を使用し、支出項目全件を取得</p></li>
+<li><p>正常終了時、支出項目がレスポンスされる</p></li>
+<li><p>取得情報をもとに「支出項目テーブル」を更新</p></li>
+</ol>
+<div class="mermaid">
+            	sequenceDiagram
+	    autonumber
+	    actor 画面
+	    participant browser as ブラウザ
+	    participant server as サーバー
+	    画面-&gt;&gt;browser : 支出項目情報送信
+	    Note left of browser : 支出項目登録フォーム
+	    browser-&gt;&gt;server : category[POST]
+	    Note left of server : API仕様に沿ったDTO
+	    server-&gt;&gt;browser : 正常終了応答
+	    Note left of server : 201
+	    browser-&gt;&gt;server : category[GET]
+	    server-&gt;&gt;browser : 正常終了応答
+	    Note left of server : 支出項目
+	    browser-&gt;&gt;画面 : 支出項目テーブル更新
+        </div><hr class="docutils" />
+<p><strong>支出項目変更</strong></p>
+<ol class="arabic simple">
+<li><p>「支出項目変更ボタン」の押下</p></li>
+<li><p>入力された支出項目情報をもとにcategory [PUT]を使用し支出情報を登録する</p></li>
+<li><p>正常終了時、後続の処理へ進む</p></li>
+<li><p>category [GET]を使用し、支出項目全件を取得</p></li>
+<li><p>正常終了時、支出項目がレスポンスされる</p></li>
+<li><p>取得情報をもとに「支出項目テーブル」を更新</p></li>
+</ol>
+<div class="mermaid">
+            	sequenceDiagram
+	    autonumber
+	    actor 画面
+	    participant browser as ブラウザ
+	    participant server as サーバー
+	    画面-&gt;&gt;browser : 支出項目情報送信
+	    Note left of browser : 支出項目登録フォーム
+	    browser-&gt;&gt;server : category[POST]
+	    Note left of server : API仕様に沿ったDTO
+	    server-&gt;&gt;browser : 正常終了応答
+	    Note left of server : 201
+	    browser-&gt;&gt;server : category[GET]
+	    server-&gt;&gt;browser : 正常終了応答
+	    Note left of server : 支出項目
+	    browser-&gt;&gt;画面 : 支出項目テーブル更新
+        </div></section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">項目設定画面</a><ul>
+<li><a class="reference internal" href="#id2">機能と配置</a></li>
+<li><a class="reference internal" href="#api">使用するAPI</a></li>
+<li><a class="reference internal" href="#id3">デザイン</a></li>
+<li><a class="reference internal" href="#id4">パーツごとの詳細仕様</a></li>
+<li><a class="reference internal" href="#cgi">操作・CGI</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="expence_operation.html"
+                          title="previous chapter">支出情報操作画面</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../frontend/index.html"
+                          title="next chapter">フロントエンド</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/contents/dev_document/design_operation_cgi/category_setting.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../frontend/index.html" title="フロントエンド"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="expence_operation.html" title="支出情報操作画面"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >開発ドキュメント</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >画面デザイン・操作・CGI設計</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">項目設定画面</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, H.Nishiyama.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    </div>
+  </body>
+</html>

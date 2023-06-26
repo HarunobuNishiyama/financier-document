@@ -1,0 +1,414 @@
+
+<!DOCTYPE html>
+
+<html lang="jp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ドメインモデルとDB &#8212; financier_document  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="画面デザイン・操作・CGI設計" href="design_operation_cgi/index.html" />
+    <link rel="prev" title="開発ドキュメント" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="design_operation_cgi/index.html" title="画面デザイン・操作・CGI設計"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="開発ドキュメント"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">開発ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ドメインモデルとDB</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="db">
+<h1>ドメインモデルとDB<a class="headerlink" href="#db" title="Permalink to this heading">¶</a></h1>
+<section id="id1">
+<h2>ドメインモデル<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
+<p>このアプリケーションの主機能は、</p>
+<ul class="simple">
+<li><p>家計の一部を同じくする者が支出を記録する</p></li>
+<li><p>出費を均等にするための計算を行う</p></li>
+</ul>
+<p>ことである。<br />
+また、ポートフォリオとして使う際、個人情報である支出情報を公開しないために、ゲストユーザーのアカウントを設ける。</p>
+<p><strong>帳簿</strong></p>
+<p>「支出を記録する/個人的な支出情報を公開しない」ために、「帳簿」という概念を用いる。<br />
+支出の記録は帳簿ごとに行い、その帳簿に紐づくユーザーしか、情報の閲覧や操作ができない。</p>
+<p><img alt="帳簿システム" src="../../_images/book_system.png" /></p>
+<p><strong>支出情報</strong><br />
+支出情報は厳格な定義は定めずにユーザーの運用に一部委ねることにするが、ここでは分かりやすくするため</p>
+<ul class="simple">
+<li><p>「レシート一枚当たり」=「一件の支出情報」</p></li>
+</ul>
+<p>とする。<br />
+一件の支出情報は、次の要素で構成される。</p>
+<ul class="simple">
+<li><p>日付: 支出の日付で、年/月/日の単位で記録される</p></li>
+<li><p>支出項目: 何の支出かを示す(電気代、食費など)</p></li>
+<li><p>金額: 支出の金額</p></li>
+<li><p>立替: 立替支出か通常の支出かを示す</p></li>
+<li><p>支払い者: 支払ったユーザーを示す</p></li>
+</ul>
+<p><strong>支出項目</strong></p>
+<p>支出情報を構成する要素の一つである支出項目の役割は先述の通り。<br />
+ユーザー操作において、支出項目は予め登録された一覧から、適するものを選択する形で入力される。</p>
+<p>支出項目は、以下の要素で構成される。</p>
+<ul class="simple">
+<li><p>項目名: 何の支出であるかをわかりやすく示す項目名</p></li>
+<li><p>説明: 項目名を詳細に説明する文章</p></li>
+</ul>
+<p>支出項目を登録管理する画面では項目名と説明文を表示し、支出情報を入力する画面では項目名だけを選択肢として表示する。</p>
+<p><img alt="支出と支出項目" src="../../_images/expence_category.png" /></p>
+<p><strong>個人情報の保護</strong><br />
+上述の通り、「帳簿」を分けることで個人情報を保護する。<br />
+従って、DB上で管理される「支出情報」と「支出項目」には、どの帳簿に紐づくデータなのかが必ず明記される。</p>
+</section>
+<section id="id2">
+<h2>DB<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<p>テーブル定義を上記のドメインモデルに沿って説明する。<br />
+(※DBの詳細資料は、SchemaSpyで出力したものをプロジェクトのtoolsディレクトリに配置している。)</p>
+<p><strong>関係図</strong></p>
+<p><img alt="DB関係図" src="../../_images/db_relation.PNG" /></p>
+<hr class="docutils" />
+<p><strong>account</strong><br />
+主キーでユーザーを一意に管理する。名前とパスワードでユーザーの認証を行う。</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Field</p></th>
+<th class="head text-left"><p>Type</p></th>
+<th class="head text-left"><p>Null</p></th>
+<th class="head text-left"><p>Key</p></th>
+<th class="head text-left"><p>Default</p></th>
+<th class="head text-left"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>account_id</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p>PRI</p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>主キー</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>name</p></td>
+<td class="text-left"><p>varchar(10)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p></p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>ユーザー名</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>password</p></td>
+<td class="text-left"><p>varchar(200)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p></p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>パスワード</p></td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<p><strong>book</strong><br />
+主キーで帳簿を一意に管理する。画面表示向けに、帳簿は固有の名前を持つ。</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Field</p></th>
+<th class="head text-left"><p>Type</p></th>
+<th class="head text-left"><p>Null</p></th>
+<th class="head text-left"><p>Key</p></th>
+<th class="head text-left"><p>Default</p></th>
+<th class="head text-left"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>book_id</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p>PRI</p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>主キー</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>book_name</p></td>
+<td class="text-left"><p>varchar(50)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p></p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>帳簿名</p></td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<p><strong>book_member</strong><br />
+ユーザーがどの帳簿に所属するかを管理する。<br />
+1レコードあたりに、帳簿と所属するユーザーのアカウントの組み合わせが格納される。</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Field</p></th>
+<th class="head text-left"><p>Type</p></th>
+<th class="head text-left"><p>Null</p></th>
+<th class="head text-left"><p>Key</p></th>
+<th class="head text-left"><p>Default</p></th>
+<th class="head text-left"><p>description</p></th>
+<th class="head text-left"><p>FK</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>book_member_id</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p>PRI</p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>主キー</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>account_id</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p>MUL</p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>所属するアカウント</p></td>
+<td class="text-left"><p>account.account_id</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>book_id</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p>MUL</p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>アカウントが所属する帳簿</p></td>
+<td class="text-left"><p>book.book_id</p></td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<p><strong>category</strong><br />
+ユーザーの登録した支出項目を管理する。<br />
+個人情報保護のために、<code class="docutils literal notranslate"><span class="pre">book_id</span></code>でどの帳簿の情報なのか区別する。</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Field</p></th>
+<th class="head text-left"><p>Type</p></th>
+<th class="head text-left"><p>Null</p></th>
+<th class="head text-left"><p>Key</p></th>
+<th class="head text-left"><p>Default</p></th>
+<th class="head text-left"><p>description</p></th>
+<th class="head text-left"><p>FK</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>category_id</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p>PRI</p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>主キー</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>category_name</p></td>
+<td class="text-left"><p>varchar(20)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p></p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>項目名</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>description</p></td>
+<td class="text-left"><p>varchar(20)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p></p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>項目名の説明</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>book_id</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p>MUL</p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>どの帳簿のデータか示す</p></td>
+<td class="text-left"><p>book.book_id</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>available</p></td>
+<td class="text-left"><p>tinyint(1)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p></p></td>
+<td class="text-left"><p>1</p></td>
+<td class="text-left"><p>使用可能か</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<p><strong>expence</strong><br />
+ユーザーの登録した支出情報を管理する。<br />
+個人情報保護のために、<code class="docutils literal notranslate"><span class="pre">book_id</span></code>でどの帳簿の情報なのか区別する。</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Field</p></th>
+<th class="head text-left"><p>Type</p></th>
+<th class="head text-left"><p>Null</p></th>
+<th class="head text-left"><p>Key</p></th>
+<th class="head text-left"><p>Default</p></th>
+<th class="head text-left"><p>description</p></th>
+<th class="head text-left"><p>FK</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>expence_id</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p>PRI</p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>主キー</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>category_id</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p>MUL</p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>外部キー</p></td>
+<td class="text-left"><p>category.category_id</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>price</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p></p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>金額</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>purchace_date</p></td>
+<td class="text-left"><p>datetime</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p></p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>購入日</p></td>
+<td class="text-left"><p>book.book_id</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>book_id</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p>MUL</p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>どの帳簿のデータか示す</p></td>
+<td class="text-left"><p>book.book_id</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>account_id</p></td>
+<td class="text-left"><p>int(11)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p>MUL</p></td>
+<td class="text-left"><p>NULL</p></td>
+<td class="text-left"><p>支払者であるユーザー</p></td>
+<td class="text-left"><p>account.account_id</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>reimbursement</p></td>
+<td class="text-left"><p>tinyint(1)</p></td>
+<td class="text-left"><p>NO</p></td>
+<td class="text-left"><p></p></td>
+<td class="text-left"><p>0</p></td>
+<td class="text-left"><p>trueであれば立替支出である</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ドメインモデルとDB</a><ul>
+<li><a class="reference internal" href="#id1">ドメインモデル</a></li>
+<li><a class="reference internal" href="#id2">DB</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">開発ドキュメント</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="design_operation_cgi/index.html"
+                          title="next chapter">画面デザイン・操作・CGI設計</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/contents/dev_document/db.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="design_operation_cgi/index.html" title="画面デザイン・操作・CGI設計"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="開発ドキュメント"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">financier_document  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >開発ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ドメインモデルとDB</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, H.Nishiyama.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+# ディレクトリ構成
+
+```
+├─app
+│  └─config			...アプリケーション設定のためのクラス
+├─common
+│  └─security		...セキュリティ実装のためのクラス
+├─domain			...DBに関連するパッケージ
+│  ├─model			...テーブル構造を表したクラス
+│  └─repository		...データアクセスのためのクラス
+├─exeption			...独自定義の例外実装のためのパッケージ
+├─util			...utilityクラス
+└─web				...クライアントとの通信に関係する
+    ├─controller		...ページ遷移のためのコントローラー
+    ├─request			...リクエストのためのDTO
+    ├─response		...レスポンスのためのDTO
+    └─restcontroller		...RestAPIのためのコントローラー
+```
